@@ -1,4 +1,4 @@
-import { Form, Link, NavLink, Outlet, useNavigation } from "react-router";
+import { Form, Link, NavLink, Outlet, useNavigation, useSubmit } from "react-router";
 import { useEffect } from "react";
 
 import { getContacts } from "../data";
@@ -16,6 +16,7 @@ export default function SidebarLayout({
 }: Route.ComponentProps) {
   const { contacts, q } = loaderData;
   const navigation = useNavigation();
+  const submit = useSubmit();
 
   useEffect(() => {
     const searchField = document.getElementById("q");
@@ -31,7 +32,7 @@ export default function SidebarLayout({
           <Link to="about">React Router Contacts</Link>
         </h1>
         <div>
-          <Form id="search-form" role="search">
+          <Form id="search-form" onChange={(event) => submit(event.currentTarget)} role="search">
             <input
               aria-label="Search contacts"
               defaultValue={q || ""}
@@ -56,7 +57,7 @@ export default function SidebarLayout({
               {contacts.map((contact) => (
                 <li key={contact.id}>
                   <NavLink
-                    className={({ isActive, isPending }) => 
+                    className={({ isActive, isPending }) =>
                       isActive ? "active" : isPending ? "pending" : ""
                     }
                     to={`contacts/${contact.id}`}
