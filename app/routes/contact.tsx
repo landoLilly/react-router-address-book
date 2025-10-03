@@ -1,9 +1,17 @@
-import { Form } from "react-router";
+import { Form, useFetcher } from "react-router";
 
 import type { ContactRecord } from "../data";
 
-import { getContact } from "../data";
+import { getContact, updateContact } from "../data";
 import type { Route } from "./+types/contact";
+
+// create the action
+export async function action({ request, params }: Route.ActionArgs) {
+  const formData = await request.formData();
+  return updateContact(params.contactId, {
+    favorite: formData.get("favorite") === "true",
+  });
+}
 
 // add a loader and fetch the contact by the url param contactId
 export async function loader({ params }: Route.LoaderArgs) {
@@ -82,9 +90,10 @@ function Favorite({
   contact: Pick<ContactRecord, "favorite">;
 }) {
   const favorite = contact.favorite;
+  const fetcher = useFetcher();
 
   return (
-    <Form method="post">
+    <fetcher.Form method="post">
       <button
         aria-label={favorite
           ? "Remove from favorites"
@@ -95,6 +104,6 @@ function Favorite({
       >
         {favorite ? "★" : "☆"}
       </button>
-    </Form>
+    </fetcher.Form>
   );
 }
