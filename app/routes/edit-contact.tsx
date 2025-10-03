@@ -2,6 +2,7 @@ import { Form, redirect } from "react-router";
 import type { Route } from "./+types/edit-contact";
 
 import { getContact, updateContact } from "../data";
+import { useNavigate } from "react-router";
 
 export async function action({ request, params }: Route.ActionArgs) {
   const formData = await request.formData();
@@ -22,6 +23,11 @@ export default function EditContact({
   loaderData,
 }: Route.ComponentProps) {
   const { contact } = loaderData;
+  const navigate = useNavigate();
+  
+  function handleCancel() {
+    navigate(-1);
+  }
 
   return (
     <Form key={contact.id} id="contact-form" method="post">
@@ -71,7 +77,7 @@ export default function EditContact({
       </label>
       <p>
         <button type="submit">Save</button>
-        <button type="button">Cancel</button>
+        <button type="button" onClick={handleCancel}>Cancel</button>
       </p>
     </Form>
   );
